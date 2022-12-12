@@ -1,32 +1,29 @@
 import re
-from typing import Union, Generator, List, Iterable, Iterator
+from typing import Any, Iterable, Iterator, List, Set
 
 
-def filter_query(param: str, data: Union[Generator, List[str]]):
-    """Функция фильтрации данных."""
+def filter_query(param: str, data: Iterable[str]) -> Iterator[str]:
     return filter(lambda x: param in x, data)
 
 
-def map_query(param: str, data: Iterable[str]):
-    """Функция получает номер колонки и выводит данные этой колонки."""
-    col_number = int(param)
-    return map(lambda x: x. split(' ')[col_number], data)
+def map_query(param: str, data: Iterable[str]) -> Iterator[str]:
+    col_number: int = int(param)
+    return map(lambda x: x.split(' ')[col_number], data)
 
 
-def unique_query(param: str, data: Iterable[str]):
-    """Функция из уникальных позиций."""
+def unique_query(data: Iterable[str], *args: Any, **kwargs: Any) -> Set[str]:
     return set(data)
 
 
-def sort_query(param: str, data: Iterable[str]):
-    """ Функция сортировки данных."""
+def sort_query(param: str, data: Iterable[str]) -> List[str]:
     return sorted(data, reverse=param == 'desc')
 
 
-def limit_query(param: str, data: Iterable[str]):
-    """Функция создает позиции в заданном количестве."""
-    limit = int(param)
-    return data[:limit]
+def limit_query(param: str, data: Iterable[str]) -> List[str]:
+    limit: int = int(param)
+    return list(data)[:limit]
 
-def regex_query(param: str, data: List[str]) -> Iterator[str]:
-    return filter(lambda row: re.compile(rf'{str(param)}').search(row), data)
+
+def regex_query(param: str, data: Iterable[str]) -> Iterator[str]:
+    pattern = re.compile(param)
+    return filter(lambda x: re.search(pattern, x), data)
